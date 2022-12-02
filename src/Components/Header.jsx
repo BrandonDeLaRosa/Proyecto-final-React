@@ -16,7 +16,7 @@ const Header = () => {
             <Nav className='links'>
           
               <Nav.Link className='link' as={Link} to="/"><i class="fa-solid fa-house"></i></Nav.Link><br />
-              <Nav.Link className='link' as={Link} to="/newUser">New User</Nav.Link><br />
+              <Nav.Link className='link' as={Link} to="/newUser"><i class="fa-solid fa-user-plus"></i></Nav.Link><br />
               <Nav.Link className='link' as={Link} to="/login"><i class="fa-solid fa-user"></i></Nav.Link><br />
               <Nav.Link className='link' onClick={handleShow}><i class="fa-solid fa-cart-shopping"></i></Nav.Link><br />
             </Nav>
