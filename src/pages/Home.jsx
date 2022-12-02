@@ -1,9 +1,9 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Col, InputGroup, ListGroup, Row } from 'react-bootstrap';
+import { Button, Card, Col, InputGroup, ListGroup, Row, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { Form, Link } from 'react-router-dom';
-import { filterNameProductThunk, filterProductsThunk, getProductsThunk } from '../store/slices/products.slice';
+import { Link } from 'react-router-dom';
+import { filterNameProductThunk, filterPrice, filterProductsThunk, getProductsThunk } from '../store/slices/products.slice';
 
 const Home = () => {
 
@@ -12,37 +12,44 @@ const Home = () => {
     const [categoriesList, setCategoriesList] = useState([])
     const [searchByName, setSearchByName] = useState("")
 
+    const [fromPrice, setFromPrice] = useState("")
+    const [toPrice, setToPrice] = useState("")
+    
+    // const filter = () =>{
+    //      products.filter(productItem => productItem.price >= Number(fromPrice) && productItem.price <= Number(toPrice))
+    // }
+
     useEffect(() => {
         dispatch(getProductsThunk())
         axios.get("https://e-commerce-api.academlo.tech/api/v1/products/categories")
         .then(res => setCategoriesList(res.data.data.categories))
     },[])
+    
 
-    // useEffect(() => {
-    //     axios.get("https://e-commerce-api.academlo.tech/api/v1/products/categories")
-    //      .then(res => setCategoriesList(res.data.data.categories))
-    // },[])
-
-    console.log(categoriesList);
+    // console.log(categoriesList);
+    console.log(products);
     
     return (
         <div>
             <Row>
-                {/* responsive Grids y breakPoints al trabajr con grid system*/}
-                {/* lg pertence a breakpoints e indica que el grid se va aplicar a partir del tamaño large de la pantalla */}
                 <Col lg={3}>
-                    <ListGroup>                       
+                    <ListGroup> 
+
+                        <input type="number" value={fromPrice} onChange={e => setFromPrice (e.target.value)} placeholder="From"/>                       
+                        <input type="number" value={toPrice} onChange={e => setToPrice (e.target.value)} placeholder="To"/>
+                        <button onClick={() => dispatch(filterPrice({fromPrice, toPrice}))}>
+                        Submit
+                        </button>
+
+
                         {
                             categoriesList.map(category => (
                                 <div key={category.id}>
                                     <ListGroup.Item onClick={() => dispatch(filterProductsThunk(category.id))}
-                                    style={{cursor: "pointer"}}
+                                    style={{cursor: "pointer"}} 
                                     >
                                         {category.name}
                                     </ListGroup.Item>
-                                    {/* <button onClick={() => dispatch(filterProductsThunk(category.id))}>
-                                        {category.name}
-                                    </button> */}
                                 </div>
                             ))
                         }
@@ -53,10 +60,6 @@ const Home = () => {
                     <h1>Home Page</h1>
 
                     <div>
-                        <input type="text" value={searchByName} onChange={e => setSearchByName(e.target.value)} />
-                        <button onClick={() => dispatch(filterNameProductThunk(searchByName))}>Search</button>
-                    </div> <br />
-                    {/* <div>
                         <InputGroup className="mb-3">
                             <Form.Control
                                 placeholder="Recipient's username"
@@ -70,12 +73,12 @@ const Home = () => {
                                 Button
                             </Button>
                         </InputGroup>
-                    </div> */}
+                    </div>
 
                     <Row xs={1} md={2} lg={3} className="g-4">
                         {products.map(product => (
-                            <Col>
-                                <Card key={product.id}>
+                            <Col key={product.id}>
+                                <Card >
                                     <Link to={`/products/${product.id}`}
                                     style={{textDecoration: "none"}}
                                     >
@@ -90,7 +93,7 @@ const Home = () => {
                                         <Card.Body>
                                             <Card.Title>{product.title} <br /></Card.Title>
                                             <Card.Text>
-
+                                                   $ {product.price}
                                             </Card.Text>
                                         </Card.Body>
                                     </Link>

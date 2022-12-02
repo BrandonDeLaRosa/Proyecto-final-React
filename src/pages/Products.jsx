@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
-import { Col, ListGroup, Row } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Button, Col, ListGroup, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
+import { addCartThunk } from '../store/slices/cart.slice';
 import { getProductsThunk } from '../store/slices/products.slice';
 
 const Products = () => {
@@ -11,18 +12,11 @@ const Products = () => {
     useEffect(() => {
         dispatch(getProductsThunk())
     },[])
+    const[userSearch, setUserSearch] = useState("")
 
     const {id} = useParams()
     const productsList= useSelector(state => state.products)
     const products = productsList.find(productItem => productItem.id === Number (id))
-    // find() trabaja igual que map
-    // el id que se recibe es string, y el de productItem es number, para corregir errores, podemos pasr id a number o productItem a string, o colocar ==
-    // const products = productsList.find(productItem => productItem.id === Number(id))
-    // console.log(products); //<-- cuando se da refresh se pone de nuevo el estado vacio, por lo que se añade el thunk con getProducts
-
-
-    // se declara que traiga todos los productos cuyo id de categoria sea igual al producto seleccionado en home
-    // Y al mismo tiempo que no traiga el producto cuyo id sea igual al seleccionado.
     const relatedProducts = productsList.filter(productItem => 
         productItem?.category.id  === products?.category.id
         && productItem !== products
@@ -31,9 +25,19 @@ const Products = () => {
     console.log(relatedProducts);
     console.log(products);
 
+    const addToCart =() => {
+        const productos = {
+            id: products.id,
+            quantity: userSearch
+        }
+        dispatch(addCartThunk(productos))
+    }
+
     return (
         <div>
             <h1>{products?.title}</h1> <br />
+            <input type="number" value={userSearch} onChange={e => setUserSearch(e.target.value)}  />
+            <Button onClick={addToCart}>Add to Cart</Button>
             <Row>
                 <Col lg={9}>
                 <img src={products?.productImgs?.[0]} alt="" className='img-fluid'/> 

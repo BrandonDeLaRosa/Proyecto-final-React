@@ -8,6 +8,11 @@ export const mySlice = createSlice({
     reducers: {
         setProducts: (state, action) => {
             return action.payload
+        },
+        filterPrice: (state, action) => {
+            const { fromPrice, toPrice } = action.payload;
+            console.log(fromPrice)
+            return state.filter(product => product.price > Number(fromPrice) && product.price < Number(toPrice))
         }
     }
 })
@@ -33,6 +38,6 @@ export const filterNameProductThunk = (searchByName) => (dispatch) => {
      .finally(() => dispatch(setIsLoading(false)));
 }
 
-export const { setProducts } = mySlice.actions;
+export const { setProducts, filterPrice } = mySlice.actions;
 
 export default mySlice.reducer;
